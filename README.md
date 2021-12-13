@@ -21,8 +21,12 @@ ENV DEBIAN_FRONTEND noninteractive
 
 ## 依赖
 
-```
-apt install -y libzbar0 locales locales-all fonts-noto
+```bash
+apt install -y locales locales-all fonts-noto
+
+apt-get install -y libnss3-dev libxss1 libasound2 libxrandr2 \
+    libatk1.0-0 libgtk-3-0 libgbm-dev libxshmfence1
+
 playwright install chromium && playwright install-deps
 ```
 
@@ -30,5 +34,4 @@ playwright install chromium && playwright install-deps
 
 `美剧` `tvseries`
 
-# 有问题 提pr
-有问题 提pr
+# 有问题 提issue 最好pr
