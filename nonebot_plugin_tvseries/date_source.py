@@ -48,7 +48,7 @@ def parse_data(content: str) -> str:
     return html
 
 
-async def create_image(html: str, wait: int = 0) -> str:
+async def create_image(html: str, wait: int = 0) -> bytes:
     async with new_page(viewport={"width": 1200, "height": 600}) as page:
         await page.set_content(html, wait_until="networkidle")
         await page.wait_for_timeout(wait)
