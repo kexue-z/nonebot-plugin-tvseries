@@ -1,9 +1,9 @@
 from .date_source import get_tvseries
 from nonebot import on_command
-from nonebot.adapters.cqhttp import Bot, MessageEvent, MessageSegment
+from nonebot.adapters.onebot.v11 import Bot, MessageEvent, MessageSegment
 
 
-tvseries = on_command("美剧", aliases={"tvseries"})
+tvseries = on_command("剧集", aliases={"tvseries"})
 
 
 @tvseries.handle()

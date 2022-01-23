@@ -32,6 +32,6 @@ playwright install chromium && playwright install-deps
 
 # 使用
 
-`美剧` `tvseries`
+`剧集` `tvseries`
 
 # 有问题 提issue 最好pr

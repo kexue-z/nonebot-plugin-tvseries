@@ -3,9 +3,9 @@ from os.path import dirname
 
 from httpx import AsyncClient
 from lxml import etree
-from PIL import Image
+from nonebot import require
 
-from .browser import get_new_page
+new_page = require("nonebot_plugin_htmlrender").get_new_page
 
 
 async def get_tvseries(week: str = None) -> bytes:
@@ -18,25 +18,10 @@ async def get_tvseries(week: str = None) -> bytes:
         res = await client.get(url)
         result = parse_data(res.text)
         if __name__ == "__main__":
-            with open("./test/out.html","w+") as f:
+            with open("./test/out.html", "w+") as f:
                 f.write(result)
     image = await create_image(result)
     return image
-
-
-# def parse_week(week_raw: str) -> str:
-#     weeks = {
-#         "一": "Monday",
-#         "二": "Tuesday",
-#         "三": "Wednesday",
-#         "四": "Thursday",
-#         "五": "Friday",
-#         "六": "Saturday",
-#         "日": "Sunday",
-#     }
-#     if week_raw in weeks:
-#         week = weeks[week_raw]
-#     return week
 
 
 def parse_date(date: str = None) -> str:
@@ -64,7 +49,7 @@ def parse_data(content: str) -> str:
 
 
 async def create_image(html: str, wait: int = 0) -> str:
-    async with get_new_page(viewport={"width": 1200, "height": 600}) as page:
+    async with new_page(viewport={"width": 1200, "height": 600}) as page:
         await page.set_content(html, wait_until="networkidle")
         await page.wait_for_timeout(wait)
         img_raw = await page.screenshot(full_page=True)
@@ -74,6 +59,7 @@ async def create_image(html: str, wait: int = 0) -> str:
 if __name__ == "__main__":
     print("Testing...")
     import asyncio
+    from PIL import Image
 
     img_bytes = asyncio.run(get_tvseries(week="一"))
     img = Image.open(io.BytesIO(img_bytes))
