@@ -1,38 +1,37 @@
-import io
-from os.path import dirname
+from pathlib import Path
+from typing import Optional
 
-from httpx import AsyncClient
 from lxml import etree
 from nonebot import require
+from nonebot.adapters import Bot
+from nonebot.drivers import Request
+import datetime
 
 new_page = require("nonebot_plugin_htmlrender").get_new_page
 
 
-async def get_tvseries(week: str = None) -> bytes:
+async def get_tvseries(bot: Bot, week: Optional[str] = None) -> bytes:
     url = "https://huo720.com/calendar"
 
     # if week:
     #     url += f"?{parse_week(week)}"
-
-    async with AsyncClient() as client:
-        res = await client.get(url)
-        result = parse_data(res.text)
-        if __name__ == "__main__":
-            with open("./test/out.html", "w+") as f:
-                f.write(result)
+    req = Request("GET", url)
+    res = await bot.adapter.request(req)
+    result = parse_data(str(res.content))
     image = await create_image(result)
     return image
 
 
-def parse_date(date: str = None) -> str:
-    import datetime
+def parse_date(date: Optional[str] = None) -> str:
+
 
     now = datetime.datetime.now()
     return now.strftime(r"%Y-%m-%d")
 
 
 def parse_data(content: str) -> str:
-    with open(dirname(__file__) + "/css.css", "r") as f:
+    css = Path(__file__).parent / "css.css"
+    with css.open("r") as f:
         css = f.read()
 
     dom = etree.HTML(content)
@@ -54,13 +53,3 @@ async def create_image(html: str, wait: int = 0) -> bytes:
         await page.wait_for_timeout(wait)
         img_raw = await page.screenshot(full_page=True)
     return img_raw
-
-
-if __name__ == "__main__":
-    print("Testing...")
-    import asyncio
-    from PIL import Image
-
-    img_bytes = asyncio.run(get_tvseries(week="一"))
-    img = Image.open(io.BytesIO(img_bytes))
-    img.save("./test/out.png")
